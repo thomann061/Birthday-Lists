@@ -3,3 +3,30 @@ extends ../layout
 block content
   h1= title
   p Welcome to #{title}
+  div(class="container")
+    table(class="contactsEditor")
+      tr
+        th List Name
+        th Items
+      tbody(data-bind="foreach: lists")
+        tr
+          td
+            label(data-bind="text: ListName")
+            div
+              a(href="#" data-bind="click: $root.removeList") Delete
+              a(href="#" data-bind="click: $root.editList") Edit
+          td
+            table
+              tbody(data-bind="foreach: ListItems")
+                tr
+                  td
+                    label(data-bind="text: Item")
+
+block scripts
+  script.
+    $(document).ready(() => {
+      $.getJSON( "/list/api/", ( data ) => {
+        const model = new ViewModel(data.data);
+        ko.applyBindings(model);
+      });
+    });

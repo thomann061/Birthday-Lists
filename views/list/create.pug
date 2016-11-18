@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  div(class="container")
+    table(class="contactsEditor")
+      tr
+        th List Name
+        th List Items
+      tbody(data-bind="foreach: lists")
+        tr
+          td
+            input(data-bind="value: ListName")
+          td
+            table
+              tbody(data-bind="foreach: ListItems")
+                tr
+                  td
+                    input(data-bind="value: Item")
+                  td
+                    a(href="#" data-bind="click: $root.removeItem") Delete
+            a(href="#" data-bind="click: $root.addItem") Add List Item
+    button(data-bind="click: post, enable: lists().length > 0") Save
+
+block scripts
+  script.
+    ko.applyBindings(new ViewModel(initialCreateData));
