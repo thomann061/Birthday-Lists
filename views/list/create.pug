@@ -3,25 +3,22 @@ extends ../layout
 block content
   h1= title
   p Welcome to #{title}
-  div(class="container")
-    table(class="contactsEditor")
-      tr
-        th List Name
-        th List Items
-      tbody(data-bind="foreach: lists")
-        tr
-          td
-            input(data-bind="value: ListName")
-          td
-            table
-              tbody(data-bind="foreach: ListItems")
-                tr
-                  td
-                    input(data-bind="value: Item")
-                  td
-                    a(href="#" data-bind="click: $root.removeItem") Delete
-            a(href="#" data-bind="click: $root.addItem") Add List Item
-    button(data-bind="click: post, enable: lists().length > 0") Save
+  div(class="container" data-bind="foreach: lists")
+    div(class="form-group")
+      label List Name
+      input(class="form-control" type="text" data-bind="value: ListName")
+    div(class="form-group")
+      label List Items
+      div(class="form-group" data-bind="foreach: ListItems")
+        div(class="form-inline")
+          div(class="form-group")
+            input(class="form-control" type="text" data-bind="value: Item")
+          div(class="form-group")
+            a(href="#" data-bind="click: $root.removeItem") Delete
+      div(class="form-group")
+        a(href="#" data-bind="click: $root.addItem") Add List Item
+  div(class="form-group")
+    button(class="btn btn-primary" data-bind="click: post, enable: lists().length > 0") Save
 
 block scripts
   script.
