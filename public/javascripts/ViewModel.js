@@ -1,5 +1,5 @@
 function guid() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
 		var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
 		return v.toString(16);
 	});
@@ -7,26 +7,26 @@ function guid() {
 
 const initialCreateData = [
 	{
-		ListName: "New Birthday List #",
-		ListItems: [ { Item: "Cool Toy" } , { Item: "Sweet Toy" } ],
+		ListName: 'New Birthday List #',
+		ListItems: [ { Item: 'Cool Toy' } , { Item: 'Sweet Toy' } ],
 		ID: guid()
 	}
 ];
 
 const initialData = [
 	{
-		ListName: "Birthday List #1",
-		ListItems: [ { Item: "Scooby Doo Toy" } , { Item: "Godzilla Toy" } ],
+		ListName: 'Birthday List #1',
+		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
 		ID: guid()
 	},
 	{
-		ListName: "Birthday List #2",
-		ListItems: [ { Item: "Scooby Doo Toy" } , { Item: "Godzilla Toy" } ],
+		ListName: 'Birthday List #2',
+		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
 		ID: guid()
 	},
 	{
-		ListName: "Birthday List #3",
-		ListItems: [ { Item: "Scooby Doo Toy" } , { Item: "Godzilla Toy" } ],
+		ListName: 'Birthday List #3',
+		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
 		ID: guid()
 	}
 ];
@@ -34,13 +34,13 @@ const initialData = [
 const ViewModel = function(lists) {
 	const self = this;
 
-	self.lists = ko.observableArray(ko.utils.arrayMap(lists, function(list) {
-        return { ListName: list.ListName, ListItems: ko.observableArray(list.ListItems), ID: list.ID };
-    }));
+	self.lists = ko.observableArray(ko.utils.arrayMap(lists, (list) => {
+		return { ListName: list.ListName, ListItems: ko.observableArray(list.ListItems), ID: list.ID };
+	}));
 
 	self.addList = function() {
 		self.lists.push({
-			ListName: "",
+			ListName: '',
 			ListItems: ko.observableArray(),
 			ID: guid()
 		});
@@ -48,8 +48,8 @@ const ViewModel = function(lists) {
 
 	self.removeList = function(list) {
 		$.ajax({
-			url: "/list/api/" + list.ID,
-			type: "DELETE",
+			url: '/list/api/' + list.ID,
+			type: 'DELETE',
 			success: function() {
 				self.lists.remove(list);
 			},
@@ -61,7 +61,7 @@ const ViewModel = function(lists) {
 
 	self.addItem = function(list) {
 		list.ListItems.push({
-			Item: ""
+			Item: ''
 		});
 	};
 
@@ -70,10 +70,10 @@ const ViewModel = function(lists) {
 	};
 
 	self.editList = function(list) {
-		window.location.href = "list/edit/" + list.ID;
+		window.location.href = 'list/edit/' + list.ID;
 		$.ajax({
-			url: "/list/edit/" + list.ID,
-			type: "GET",
+			url: '/list/edit/' + list.ID,
+			type: 'GET',
 			success: function() {
 
 			},
@@ -88,11 +88,11 @@ const ViewModel = function(lists) {
 		const newString = json.substring(1, json.length-1);
 		const jsonObject = JSON.parse(newString);
 		$.ajax({
-			url: "/list/api/" + jsonObject.ID,
-			type: "PUT",
+			url: '/list/api/' + jsonObject.ID,
+			type: 'PUT',
 			data: newString,
-			contentType: "application/json",
-			dataType: "json",
+			contentType: 'application/json',
+			dataType: 'json',
 			success: function() {
 
 			},
@@ -106,11 +106,11 @@ const ViewModel = function(lists) {
 		const json = JSON.stringify(ko.toJS(self.lists));
 		const newString = json.substring(1, json.length-1);
 		$.ajax({
-			url: "/list/api/",
-			type: "POST",
+			url: '/list/api/',
+			type: 'POST',
 			data: newString,
-			contentType: "application/json",
-			dataType: "json",
+			contentType: 'application/json',
+			dataType: 'json',
 			success: function() {
 
 			},

@@ -22,10 +22,10 @@ renderPage('/edit*', 'list/edit', 'Edit List');
 
 function response(result, data, message) {
 	return {
-		"result": result,
-		"data": data,
-		"message": message
-	}
+		'result': result,
+		'data': data,
+		'message': message
+	};
 }
 
 /* POST or save a List */
@@ -35,9 +35,9 @@ router.post('/api/', (req, res) => {
 	const newList = new List(listJSON);
 	newList.save((err, data) => {
 		if(err)
-			res.json(response("error", "", "Record was not saved."));
+			res.json(response('error', '', 'Record was not saved.'));
 		else
-			res.json(response("success", "", "Record was saved."));
+			res.json(response('success', '', 'Record was saved.'));
 	});
 });
 
@@ -46,9 +46,9 @@ router.get('/api/', (req, res) => {
 	const List = mongoose.model('List', listSchema);
 	List.find({}, (err, data) => {
 		if(err)
-			res.json(response("error", "", "Could not get the lists."));
+			res.json(response('error', '', 'Could not get the lists.'));
 		else
-			res.json(response("success", data, ""));
+			res.json(response('success', data, ''));
 	});
 });
 
@@ -57,9 +57,9 @@ router.get('/api/:id', (req, res) => {
 	const List = mongoose.model('List', listSchema);
 	List.find({ ID: req.params.id }, (err, data) => {
 		if(err)
-			res.json(response("error", "", "Could not get the list by that id."));
+			res.json(response('error', '', 'Could not get the list by that id.'));
 		else
-			res.json(response("success", data, ""));
+			res.json(response('success', data, ''));
 	});
 });
 
@@ -68,9 +68,9 @@ router.put('/api/:id', (req, res) => {
 	const List = mongoose.model('List', listSchema);
 	List.findOneAndUpdate({ ID: req.params.id }, req.body, (err, data) => {
 		if(err)
-			res.json(response("error", "", "Could not update the list."));
+			res.json(response('error', '', 'Could not update the list.'));
 		else
-			res.json(response("success", "", "List was updated."));
+			res.json(response('success', '', 'List was updated.'));
 	});
 });
 
@@ -79,9 +79,9 @@ router.delete('/api/:id', (req, res) => {
 	const List = mongoose.model('List', listSchema);
 	List.remove({ ID: req.params.id }, (err, data) => {
 		if(err)
-			res.json(response("error", "", "Could not delete the list."));
+			res.json(response('error', '', 'Could not delete the list.'));
 		else
-			res.json(response("success", "", "List was deleted."));
+			res.json(response('success', '', 'List was deleted.'));
 	});
 });
 
