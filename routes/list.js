@@ -11,8 +11,8 @@ const renderPage = (route, page, title) => {
 };
 
 /* GET home page. */
-renderPage('/', 'list/index', 'Birthday Lists');
-renderPage('/index', 'list/index', 'Birthday Lists');
+renderPage('/', 'list/index', 'Your Lists');
+renderPage('/index', 'list/index', 'Your Lists');
 renderPage('/create', 'list/create', 'Create List');
 renderPage('/edit*', 'list/edit', 'Edit List');
 
