@@ -70,7 +70,7 @@ const ViewModel = function(lists) {
 	};
 
 	self.editList = function(list) {
-		window.location.href = 'list/edit/' + list.ID;
+		window.location.href = '/list/edit/' + list.ID;
 		$.ajax({
 			url: '/list/edit/' + list.ID,
 			type: 'GET',
