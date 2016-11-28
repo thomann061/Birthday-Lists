@@ -9,7 +9,7 @@ block content
       div(class="form-group col-xs-2")
         a(class="btn btn-primary" href="#" data-bind="click: $root.editList") Edit
       div(class="form-group col-xs-2")
-        a(class="btn btn-danger" href="#" data-bind="click: $root.removeList") Delete
+        a(class="btn btn-danger" href="#" data-bind="inlineConfirm: ['Delete', 'Are you sure?', 'Removing'], submitFunction: $root.removeList")
 block scripts
   script.
     $(document).ready(() => {
