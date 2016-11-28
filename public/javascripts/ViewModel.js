@@ -7,26 +7,8 @@ function guid() {
 
 const initialCreateData = [
 	{
-		ListName: 'New Birthday List #',
-		ListItems: [ { Item: 'Cool Toy' } , { Item: 'Sweet Toy' } ],
-		ID: guid()
-	}
-];
-
-const initialData = [
-	{
-		ListName: 'Birthday List #1',
-		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
-		ID: guid()
-	},
-	{
-		ListName: 'Birthday List #2',
-		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
-		ID: guid()
-	},
-	{
-		ListName: 'Birthday List #3',
-		ListItems: [ { Item: 'Scooby Doo Toy' } , { Item: 'Godzilla Toy' } ],
+		ListName: '',
+		ListItems: [],
 		ID: guid()
 	}
 ];
@@ -35,19 +17,14 @@ const ViewModel = function(lists) {
 	const self = this;
 
 	self.lists = ko.observableArray(ko.utils.arrayMap(lists, (list) => {
-		return { ListName: list.ListName, ListItems: ko.observableArray(list.ListItems), ID: list.ID };
+		return { ListName: ko.observable(list.ListName).extend({ required: true }),
+		ListItems: ko.observableArray(list.ListItems), ID: list.ID };
 	}));
 
-	self.addList = function() {
-		self.lists.push({
-			ListName: '',
-			ListItems: ko.observableArray(),
-			ID: guid()
-		});
-	};
+	self.errors = ko.validation.group(self, { deep: true });
 
 	self.removeList = function(list) {
-		$.ajax({
+		return $.ajax({
 			url: '/list/api/' + list.ID,
 			type: 'DELETE',
 			success: function() {
@@ -61,7 +38,7 @@ const ViewModel = function(lists) {
 
 	self.addItem = function(list) {
 		list.ListItems.push({
-			Item: ''
+			Item: ko.observable().extend({ required: true })
 		});
 	};
 
@@ -84,39 +61,47 @@ const ViewModel = function(lists) {
 	};
 
 	self.put = function(list) {
-		const json = JSON.stringify(ko.toJS(self.lists));
-		const newString = json.substring(1, json.length-1);
-		const jsonObject = JSON.parse(newString);
-		$.ajax({
-			url: '/list/api/' + jsonObject.ID,
-			type: 'PUT',
-			data: newString,
-			contentType: 'application/json',
-			dataType: 'json',
-			success: function() {
+		if (self.errors().length != 0)
+			self.errors.showAllMessages();
+		else {
+			const json = JSON.stringify(ko.toJS(self.lists));
+			const newString = json.substring(1, json.length-1);
+			const jsonObject = JSON.parse(newString);
+			$.ajax({
+				url: '/list/api/' + jsonObject.ID,
+				type: 'PUT',
+				data: newString,
+				contentType: 'application/json',
+				dataType: 'json',
+				success: function() {
 
-			},
-			error: function () {
+				},
+				error: function () {
 
-			}
-		});
+				}
+			});
+		}
 	};
 
-	self.post = function() {
-		const json = JSON.stringify(ko.toJS(self.lists));
-		const newString = json.substring(1, json.length-1);
-		$.ajax({
-			url: '/list/api/',
-			type: 'POST',
-			data: newString,
-			contentType: 'application/json',
-			dataType: 'json',
-			success: function() {
+	self.post = function(list) {
+		if (self.errors().length != 0)
+			self.errors.showAllMessages();
+		else {
+			const json = JSON.stringify(ko.toJS(self.lists));
+			const newString = json.substring(1, json.length-1);
+			$.ajax({
+				url: '/list/api/',
+				type: 'POST',
+				data: newString,
+				contentType: 'application/json',
+				dataType: 'json',
+				success: function() {
+					self.editList(list);
+				},
+				error: function () {
 
-			},
-			error: function () {
-
-			}
-		});
+				}
+			});
+		}
 	};
 };
