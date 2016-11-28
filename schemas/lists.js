@@ -6,9 +6,19 @@ const Item = schema({
 });
 
 const list = schema({
-	ListName: { type: String, required: true, minlength: 3, maxlength: 100 },
-	ListItems: [ Item ],
-	ID: String
+	User: {
+		DisplayName: { type: String, required: true },
+		Username: { type: String, required: true, unique: true, minlength: 3, match: /[A-Za-z0-9\-\_]+/ },
+		Password: { type: String, required: true, minlength: 3 },
+		Lists: [
+			{
+				ListName: { type: String, required: true, minlength: 3, maxlength: 100 },
+				ListItems: [ Item ],
+				ID: String
+			}
+		]
+	}
+
 });
 
 module.exports = list;
