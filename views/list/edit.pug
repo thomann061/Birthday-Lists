@@ -12,13 +12,13 @@ block content
         div(class="form-group" data-bind="foreach: ListItems")
           div(class="form-inline")
             div(class="form-group")
-              input(class="form-control" type="text" data-bind="value: Item")
+              input(class="form-control" type="text" data-bind="value: $data.Item")
             div(class="form-group")
-              a(class="btn btn-danger" href="#" data-bind="click: $root.removeItem") Delete
+              a(class="btn btn-danger" href="#" data-bind="inlineConfirm: ['Delete', 'Are you sure?', 'Removing'], submitFunction: $root.removeItem")
         div(class="form-group")
-          a(class="btn btn-primary" href="#" data-bind="click: $root.addItem") Add List Item
-    div(class="form-group")
-      button(class="btn btn-success" data-bind="click: put, enable: lists().length > 0") Save
+          a(class="btn btn-success" href="#" data-bind="click: $root.addItem") Add List Item
+      div(class="form-group")
+        button(class="btn btn-default" data-bind="click: $root.put") Save
 
 block scripts
   script.
