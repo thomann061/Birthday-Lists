@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  h1= title
+  div.container
+    div.form-group
+      label Username:
+      input.form-control(type="text")
+    div.form-group
+      label Password:
+      input.form-control(type="password")
+    div.form-group
+      button.btn.btn-primary(type="button") Login
+    div.form-group
+      a(href="/user/register") New User? Register
