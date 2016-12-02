@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const mongoose = require('mongoose');
-const listSchema = require('../schemas/lists');
+const userSchema = require('../schemas/users');
 
 //function to handle page requests
 const renderPage = (route, page, title) => {
@@ -30,59 +30,94 @@ function response(result, data, message) {
 
 /* POST or save a List */
 router.post('/api/', (req, res) => {
-	const listJSON = req.body;
-	const List = mongoose.model('List', listSchema);
-	const newList = new List(listJSON);
-	newList.save((err, data) => {
-		if(err)
-			res.json(response('error', '', 'Record was not saved.'));
-		else
-			res.json(response('success', '', 'Record was saved.'));
-	});
+	//make sure user is logged in
+	if(req.session.UserID === undefined)
+		res.json(response('error', '', 'Please login first.'));
+	else {
+		const User = mongoose.model('User', userSchema);
+		User.findOneAndUpdate({ _id: req.session.UserID }, { $push: { Lists: req.body } }, (err, data) => {
+			if(err)
+				res.json(response('error', data, 'Could not create the list.'));
+			else
+				res.json(response('success', '', 'List was created.'));
+		});
+	}
 });
 
-/* GET all Lists */
+/* GET all Lists From a User */
 router.get('/api/', (req, res) => {
-	const List = mongoose.model('List', listSchema);
-	List.find({}, (err, data) => {
-		if(err)
-			res.json(response('error', '', 'Could not get the lists.'));
-		else
-			res.json(response('success', data, ''));
-	});
+	//make sure user is logged in
+	if(req.session.UserID === undefined)
+		res.json(response('error', '', 'Please login first.'));
+	else {
+		const User = mongoose.model('User', userSchema);
+		User.findOne({ _id: req.session.UserID }, (err, data) => {
+			if(err)
+				res.json(response('error', '', 'Could not get the lists.'));
+			else {
+				if(data.Lists.length == 0)
+					res.json(response('error', '', 'Create your first list!'));
+				else
+					res.json(response('success', data.Lists, 'You have lists.'));
+			}
+		});
+	}
 });
 
 /* GET one List */
 router.get('/api/:id', (req, res) => {
-	const List = mongoose.model('List', listSchema);
-	List.find({ ID: req.params.id }, (err, data) => {
-		if(err)
-			res.json(response('error', '', 'Could not get the list by that id.'));
-		else
-			res.json(response('success', data, ''));
-	});
+	//make sure user is logged in
+	if(req.session.UserID === undefined)
+		res.json(response('error', '', 'Please login first.'));
+	else {
+		const User = mongoose.model('User', userSchema);
+		User.findOne({ 'Lists._id': req.params.id }, (err, data) => {
+			if(err)
+				res.json(response('error', '', 'Could not get the list by that id.'));
+			else {
+				let doc = {};
+				data.Lists.forEach((list) => {
+					if(list._id == req.params.id)
+						doc = list;
+				});
+				res.json(response('success', doc, ''));
+			}
+		});
+	}
 });
 
-/* PUT one List */
+/* Edit one List */
 router.put('/api/:id', (req, res) => {
-	const List = mongoose.model('List', listSchema);
-	List.findOneAndUpdate({ ID: req.params.id }, req.body, (err, data) => {
-		if(err)
-			res.json(response('error', '', 'Could not update the list.'));
-		else
-			res.json(response('success', '', 'List was updated.'));
-	});
+	//make sure user is logged in
+	if(req.session.UserID === undefined)
+		res.json(response('error', '', 'Please login first.'));
+	else {
+		const User = mongoose.model('User', userSchema);
+		User.findOneAndUpdate({ 'Lists._id': req.params.id }, { $set: { 'Lists.$': req.body } }, (err, data) => {
+			if(err)
+				res.json(response('error', '', 'Could not update the list.'));
+			else
+				res.json(response('success', data, 'List was updated.'));
+		});
+	}
 });
 
-/* DELETE one List */
+/* Delete one List */
 router.delete('/api/:id', (req, res) => {
-	const List = mongoose.model('List', listSchema);
-	List.remove({ ID: req.params.id }, (err, data) => {
-		if(err)
-			res.json(response('error', '', 'Could not delete the list.'));
-		else
-			res.json(response('success', '', 'List was deleted.'));
-	});
+	//make sure user is logged in
+	if(req.session.UserID === undefined)
+		res.json(response('error', '', 'Please login first.'));
+	else {
+		const User = mongoose.model('User', userSchema);
+		User.findOneAndUpdate({ 'Lists._id': req.params.id }, {
+			$pull: { Lists: { _id: req.params.id } } }, (err, data) => {
+				if(err)
+					res.json(response('error', '', 'Could not delete the list.'));
+				else {
+					res.json(response('success', '', 'List was deleted.'));
+				}
+			});
+	}
 });
 
 module.exports = router;
