@@ -5,6 +5,7 @@ const rateLimiter = require('express-limiter');
 //var favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 //const csurf = require('csurf');
 
@@ -36,6 +37,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+	secret: 'jibbb-eeer-rrrri-iissssh',
+	resave: true,
+	saveUninitialized: true
+}));
 //app.use(csurf());
 app.use(express.static(path.join(__dirname, 'public')));
 
