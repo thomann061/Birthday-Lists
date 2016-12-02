@@ -3,23 +3,25 @@ extends ../layout
 block content
   h1= title
   div(class="container")
-    div(class="form-group" data-bind="foreach: lists")
-      div(class="form-group")
+    div(class="form-group")
+      div(class="form-group" data-bind="css: { 'has-success': ListName.isModified() && ListName.isValid(), 'has-error': ListName.isModified() && !ListName.isValid() }")
         label List Name
         input(class="form-control" type="text" data-bind="value: ListName")
       div(class="form-group")
         label List Items
         div(class="form-group" data-bind="foreach: ListItems")
           div(class="form-inline")
-            div(class="form-group")
+            div(class="form-group" data-bind="css: { 'has-success': $data.Item.isModified() && $data.Item.isValid(), 'has-error': $data.Item.isModified() && !$data.Item.isValid() }")
               input(class="form-control" type="text" data-bind="value: $data.Item")
             div(class="form-group")
               a(class="btn btn-danger" href="#" data-bind="click: $root.removeItem") Delete
         div(class="form-group")
           a(class="btn btn-success" href="#" data-bind="click: $root.addItem") Add List Item
       div(class="form-group" id="create")
-        button(class="btn btn-default" data-bind="click: $root.post") Save
+        button(class="btn btn-default" data-bind="click: $root.saveList") Save
 
 block scripts
+  script(src='/javascripts/list/CreateModel.js', type='text/javascript')
   script.
-    ko.applyBindings(new ViewModel(initialCreateData));
+    const model = new CreateModel(createJSON);
+    ko.applyBindings(model);

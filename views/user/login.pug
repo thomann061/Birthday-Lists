@@ -3,13 +3,18 @@ extends ../layout
 block content
   h1= title
   div.container
-    div.form-group
+    div.form-group(data-bind="css: { 'has-success': Username.isModified() && Username.isValid(), 'has-error': Username.isModified() && !Username.isValid() }")
       label Username:
-      input.form-control(type="text")
-    div.form-group
+      input.form-control(type="text" data-bind="value: Username")
+    div.form-group(data-bind="css: { 'has-success': Password.isModified() && Password.isValid(), 'has-error': Password.isModified() && !Password.isValid() }")
       label Password:
-      input.form-control(type="password")
-    div.form-group
-      button.btn.btn-primary(type="button") Login
+      input.form-control(type="password" data-bind="value: Password")
+    div.form-group(id="login-group")
+      button.btn.btn-primary(type="button" data-bind="click: $root.Login") Login
     div.form-group
       a(href="/user/register") New User? Register
+
+block scripts
+  script(src='/javascripts/user/LoginModel.js', type='text/javascript')
+  script.
+    ko.applyBindings(new LoginModel(loginJSON));

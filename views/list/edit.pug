@@ -3,8 +3,8 @@ extends ../layout
 block content
   h1= title
   div(class="container")
-    div(class="form-group" data-bind="foreach: lists")
-      div(class="form-group")
+    div(class="form-group")
+      div(class="form-group" data-bind="css: { 'has-success': ListName.isModified() && ListName.isValid(), 'has-error': ListName.isModified() && !ListName.isValid() }")
         label List Name
         input(class="form-control" type="text" data-bind="value: ListName")
       div(class="form-group")
@@ -14,19 +14,20 @@ block content
             div(class="form-group")
               input(class="form-control" type="text" data-bind="value: $data.Item")
             div(class="form-group")
-              a(class="btn btn-danger" href="#" data-bind="inlineConfirm: ['Delete', 'Are you sure?', 'Removing'], submitFunction: $root.removeItem")
+              a(class="btn btn-danger" href="#" data-bind="click: $root.removeItem") Delete
         div(class="form-group")
           a(class="btn btn-success" href="#" data-bind="click: $root.addItem") Add List Item
-      div(class="form-group")
-        button(class="btn btn-default" data-bind="click: $root.put") Save
+      div(class="form-group" id="create")
+        button(class="btn btn-default" data-bind="click: $root.editList") Save
 
 block scripts
+  script(src='/javascripts/list/EditModel.js', type='text/javascript')
   script.
     $(document).ready(() => {
       var url = window.location.pathname;
       var id = url.substring(url.lastIndexOf('/') + 1);
-      $.getJSON( "/list/api/" + id, ( data ) => {
-        const model = new ViewModel(data.data);
+      $.getJSON( "/list/api/" + id, ( jsonObject ) => {
+        const model = new EditModel(jsonObject);
         ko.applyBindings(model);
       });
     });
